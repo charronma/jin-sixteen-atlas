@@ -13,7 +13,16 @@ function setYear(year){index=D.frames.findIndex(f=>f.year===year);if(index<0)ind
 function stop(){if(playing)clearInterval(playing);playing=null;$('playButton').textContent='▷ 自动浏览';$('playButton').setAttribute('aria-pressed','false');}
 function move(n){index=Math.max(0,Math.min(D.frames.length-1,index+n));render();}
 function setView(v){view=v;for(const x of ['map','timeline','guide'])$(x+'View').hidden=x!==v;document.querySelectorAll('.nav').forEach(n=>{n.classList.toggle('active',n.dataset.view===v);if(n.dataset.view===v)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});if(v!=='map')stop();if(v==='timeline')renderLifelines();}
-function render(){const f=D.frames[index];$('yearNumber').textContent=f.year;$('frameTitle').textContent=f.title;$('stageLabel').textContent=`第${f.stage+1}阶段 · ${D.chapters[f.stage].name}`;$('stepCounter').textContent=`${String(index+1).padStart(2,'0')} / ${D.frames.length}`;$('previous').disabled=index===0;$('next').disabled=index===D.frames.length-1;$('yearSlider').max=D.frames.length-1;$('yearSlider').value=index;$('yearSlider').setAttribute('aria-valuetext',`${f.year}年，${f.title}`);$('yearSelect').innerHTML=D.frames.map((a,i)=>`<option value="${i}" ${i===index?'selected':''}>${a.year}年</option>`).join('');
+function render(){const f=D.frames[index];
+$('fullscreenYear').textContent=`${f.year}年`;
+$('fullscreenTitle').textContent=f.title;
+$('fullscreenPrevious').disabled=index===0;
+$('fullscreenNext').disabled=index===D.frames.length-1;
+$('fullscreenSlider').max=D.frames.length-1;
+$('fullscreenSlider').value=index;
+$('fullscreenSlider').setAttribute('aria-valuetext',`${f.year}年，${f.title}`);
+$('fullscreenYearSelect').innerHTML=D.frames.map((a,i)=>`<option value="${i}" ${i===index?'selected':''}>${a.year}年</option>`).join('');
+$('yearNumber').textContent=f.year;$('frameTitle').textContent=f.title;$('stageLabel').textContent=`第${f.stage+1}阶段 · ${D.chapters[f.stage].name}`;$('stepCounter').textContent=`${String(index+1).padStart(2,'0')} / ${D.frames.length}`;$('previous').disabled=index===0;$('next').disabled=index===D.frames.length-1;$('yearSlider').max=D.frames.length-1;$('yearSlider').value=index;$('yearSlider').setAttribute('aria-valuetext',`${f.year}年，${f.title}`);$('yearSelect').innerHTML=D.frames.map((a,i)=>`<option value="${i}" ${i===index?'selected':''}>${a.year}年</option>`).join('');
 for(const[id,key]of [['eventType','type'],['eventTitle','title'],['eventSummary','summary'],['beforeText','before'],['changeText','change'],['afterText','after'],['rememberText','remember']])$(id).textContent=f[key];$('people').innerHTML=f.people.map(p=>`<b>${esc(p)}</b>`).join('');$('eventSources').innerHTML=f.source.map(id=>{const s=D.sources.find(s=>s.id===id);return `<a href="${s.url}" target="_blank" rel="noopener">${esc(s.title)}</a>`;}).join('')+(f.volume?`<a href="https://zh.wikisource.org/wiki/資治通鑑/卷${f.volume}" target="_blank" rel="noopener">《通鉴》卷${f.volume}</a>`:'');
 $('chapters').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('active',i===f.stage);b.setAttribute('aria-pressed',i===f.stage?'true':'false');});
 $('timeTicks').innerHTML=D.frames.map((a,i)=>`<button data-index="${i}" class="${i===index?'active':''}" aria-label="${a.year}年，${esc(a.title)}" title="${esc(a.title)}">${a.year}</button>`).join('');
@@ -31,7 +40,53 @@ function renderLifelines(){const f=D.frames[index];$('miniLifelines').innerHTML=
 function details(id){const s=state(id);if(!s)return;stop();const dates=s.periods?s.periods.map(p=>p.join('—')).join('、'):`${s.start}—${s.end}`;$('detailContent').innerHTML=`<span class="eyebrow">${esc(s.group)}</span><div class="detail-dates">${s.traditional?'传统十六国之一':'相关政权 · 不在传统十六国名单内'}</div><h2 id="detailTitle"><i class="state-dot" style="background:${s.color};width:14px;height:14px;margin-right:10px"></i>${s.name}</h2><div class="detail-dates">公元 ${dates} 年${s.end>439?' · 年表显示至439年':''}</div><p>${esc(s.desc)}</p><div class="detail-grid"><div><small>主要都城 / 治所</small><strong>${esc(s.capital)}</strong></div><div><small>主要活动区域</small><strong>${esc(s.place)}</strong></div><div><small>建立者 / 早期奠基者</small><strong>${esc(s.founder)}</strong></div><div><small>主要统治集团</small><strong>${esc(s.family)}</strong></div></div><h3>沿着这几个节点记</h3>${s.events.map(([y,t])=>`<div class="detail-milestone"><b>${y}年</b><span>${esc(t)}</span></div>`).join('')}<h3>与其他政权的关系</h3><p>${esc(s.relation)}</p>${s.note?`<h3>年代说明</h3><p>${esc(s.note)}</p>`:''}<div class="detail-jump">${D.frames.filter(f=>f.year>=s.start&&f.year<=s.end).filter((f,i,a)=>i===0||i===a.length-1||s.events.some(e=>e[0]===f.year)).map(f=>`<button data-jump="${f.year}">看${f.year}年地图</button>`).join('')}</div><div class="event-sources"><a target="_blank" rel="noopener" href="${s.source||'https://zh.wikisource.org/wiki/晉書'}">${s.sourceTitle||'史料入口：《晋书》'}</a></div>`;$('detailDialog').showModal();}
 function guide(){ $('guideChapters').innerHTML=D.chapters.map(c=>`<article class="guide-card"><small>0${c.id+1} · ${c.range}年</small><h2>${c.name}</h2><p>${c.text}</p><p class="question">带着这个问题看：${c.question}</p><button data-guide="${c.year}">进入这一阶段</button></article>`).join('');$('sourceList').innerHTML=D.sources.map(s=>`<div class="source-item"><a href="${s.url}" target="_blank" rel="noopener">${s.title}</a><small>${s.note}</small></div>`).join('');}
 document.addEventListener('click',e=>{const stateButton=e.target.closest('[data-state]');if(stateButton){details(stateButton.dataset.state);return;}const c=e.target.closest('[data-year]');if(c){stop();setYear(+c.dataset.year);setView('map');return;}const t=e.target.closest('[data-index]');if(t){stop();index=+t.dataset.index;render();return;}const nav=e.target.closest('[data-view]');if(nav){setView(nav.dataset.view);return;}const j=e.target.closest('[data-jump],[data-guide]');if(j){$('detailDialog').close();setYear(+(j.dataset.jump||j.dataset.guide));setView('map');window.scrollTo({top:0,behavior:'smooth'});return;}if(e.target.closest('.dialog-close'))e.target.closest('dialog').close();});
-$('territories').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.state){e.preventDefault();details(e.target.dataset.state);}});$('previous').onclick=()=>{stop();move(-1);};$('next').onclick=()=>{stop();move(1);};$('yearSlider').oninput=e=>{stop();index=+e.target.value;render();};$('modernToggle').onchange=renderCities;$('yearSelect').onchange=e=>{stop();index=+e.target.value;render();};$('playButton').onclick=()=>{if(playing){stop();return;}if(index===D.frames.length-1)index=0;render();$('playButton').textContent='Ⅱ 暂停浏览';$('playButton').setAttribute('aria-pressed','true');playing=setInterval(()=>{if(index>=D.frames.length-1){stop();return;}move(1);},6000);};$('sourcesButton').onclick=$('footerSources').onclick=()=>{stop();$('sourcesDialog').showModal();};$('fullTimeline').onclick=()=>setView('timeline');$('timelineAll').onclick=()=>{activeFilter=false;$('timelineAll').classList.add('active');$('timelineActive').classList.remove('active');renderLifelines();};$('timelineActive').onclick=()=>{activeFilter=true;$('timelineActive').classList.add('active');$('timelineAll').classList.remove('active');renderLifelines();};document.querySelector('.brand').onclick=e=>{e.preventDefault();setView('map');};document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+$('territories').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.state){e.preventDefault();details(e.target.dataset.state);}});// Keep one map and one year state in both normal and fullscreen views.
+let mapFullscreen=false,fullscreenBusy=false,fullscreenInert=[];
+function syncFullscreen(active){
+ if(mapFullscreen===active)return;
+ mapFullscreen=active;
+ $('mapPanel').classList.toggle('is-fullscreen',active);
+ document.body.classList.toggle('map-fullscreen-open',active);
+ $('fullscreenControls').hidden=!active;
+ $('fullscreenButton').setAttribute('aria-pressed',String(active));
+ $('fullscreenButton').setAttribute('aria-label',active?'退出地图全屏':'地图全屏');
+ $('fullscreenButtonText').textContent=active?'退出全屏':'全屏';
+ if(active){
+  fullscreenInert=[...document.querySelectorAll('.site-header,.chapter-strip,.context-bar,.story-panel,.time-panel,.mini-timeline,footer,#sourcesDialog')].map(n=>[n,n.inert]);
+  fullscreenInert.forEach(([n])=>n.inert=true);
+ }else{
+  fullscreenInert.forEach(([n,previous])=>n.inert=previous);
+  fullscreenInert=[];
+ }
+ $('fullscreenButton').focus({preventScroll:true});
+}
+async function toggleFullscreen(){
+ if(fullscreenBusy)return;
+ fullscreenBusy=true;
+ try{
+  if(mapFullscreen){
+   if(document.fullscreenElement===$('mapPanel'))await document.exitFullscreen();
+   else syncFullscreen(false);
+  }else{
+   stop();
+   if($('mapPanel').requestFullscreen&&document.fullscreenEnabled){
+    try{await $('mapPanel').requestFullscreen();syncFullscreen(true);}
+    catch{syncFullscreen(true);}
+   }else syncFullscreen(true);
+  }
+ }finally{fullscreenBusy=false;}
+}
+document.addEventListener('fullscreenchange',()=>syncFullscreen(document.fullscreenElement===$('mapPanel')));
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&mapFullscreen&&!document.fullscreenElement&&!document.querySelector('dialog[open]')){
+  e.preventDefault();syncFullscreen(false);
+ }
+});
+$('fullscreenButton').onclick=toggleFullscreen;
+$('fullscreenPrevious').onclick=()=>{stop();move(-1);};
+$('fullscreenNext').onclick=()=>{stop();move(1);};
+$('fullscreenYearSelect').onchange=$('fullscreenSlider').oninput=e=>{stop();index=+e.target.value;render();};
+$('previous').onclick=()=>{stop();move(-1);};$('next').onclick=()=>{stop();move(1);};$('yearSlider').oninput=e=>{stop();index=+e.target.value;render();};$('modernToggle').onchange=renderCities;$('yearSelect').onchange=e=>{stop();index=+e.target.value;render();};$('playButton').onclick=()=>{if(playing){stop();return;}if(index===D.frames.length-1)index=0;render();$('playButton').textContent='Ⅱ 暂停浏览';$('playButton').setAttribute('aria-pressed','true');playing=setInterval(()=>{if(index>=D.frames.length-1){stop();return;}move(1);},6000);};$('sourcesButton').onclick=$('footerSources').onclick=()=>{stop();$('sourcesDialog').showModal();};$('fullTimeline').onclick=()=>setView('timeline');$('timelineAll').onclick=()=>{activeFilter=false;$('timelineAll').classList.add('active');$('timelineActive').classList.remove('active');renderLifelines();};$('timelineActive').onclick=()=>{activeFilter=true;$('timelineActive').classList.add('active');$('timelineAll').classList.remove('active');renderLifelines();};document.querySelector('.brand').onclick=e=>{e.preventDefault();setView('map');};document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
 chapterButtons();guide();render();loadGeo();
 
 // Optional browser agent interface; it uses the same visible controls and data.
