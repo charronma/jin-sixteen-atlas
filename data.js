@@ -142,3 +142,68 @@ ATLAS.states.sort((a,b)=>groupOrder.indexOf(a.group)-groupOrder.indexOf(b.group)
 // 西燕384年起兵于关中；386年部众东迁后才在晋东南形成根据地。
 f384.map.xiyan=['qineast'];f384.map.qin=['hexiWest','hexiEast','hehuang','hedong','hanzhong'];f384.labels.xiyan=[110,34.7];
 const f386=ATLAS.frames.find(f=>f.year===386);f386.map.houqin=['qineast'];f386.map.qin=['qinwest'];f386.labels.houqin=[110,34.8];f386.labels.qin=[106.8,35];
+
+
+// 2026-10：书目伴读。章节导航核对公开目录；事件核对《通鉴》原文。
+ATLAS.books=[
+ {id:'lvGeneral',author:'吕思勉',title:'《中国通史》',role:'建立整体框架',url:'https://zh.wikisource.org/wiki/呂著中國通史',linkLabel:'查看目录',status:'目录已核对',note:'以《吕著中国通史》目录为准。先读下篇第三十三至三十五章，再回看上篇的官制、选举、兵制等专题；不同版本册次、页码可能不同。'},
+ {id:'lvJin',author:'吕思勉',title:'《两晋南北朝史》',role:'展开事件与区域关系',url:'https://taiwanebook.ncl.edu.tw/zh-tw/book/NTUL-9900013618/reader',catalog:'https://www.dedao.cn/ebook/detail?id=ZykJDGjQ7AOLNa642rbP8dkEgemKDwd5Mr0XoVRjpBxl95MJzqvYGynZ18MEl5Bo',linkLabel:'旧版影像入口',status:'目录已核对',note:'对应第二至八章的相关部分。章节按公开目录定位，旧版影像可供核读；目前未逐页校读全书，不提供未经核对的页码。'},
+ {id:'qian',author:'钱穆',title:'《国史大纲》',role:'补政治与社会背景',url:'https://www.cp.com.cn/book/01dfa8b5-7.html',linkLabel:'出版社目录',status:'目录已核对',note:'重点对照第十三至十五章；需要理解门第与社会结构时，再读第十八至二十章。这里只提供章节导航，书中的解释应与原始史料对读。'},
+ {id:'tongjianBook',author:'司马光',title:'《资治通鉴》',role:'核对先后与年内事件',url:'https://zh.wikisource.org/wiki/資治通鑑',linkLabel:'阅读原文',status:'关键条目已核对',note:'本站年份卡直接定位相关卷和当年条目。先看事件，再看同一年南北双方的记录；“臣光曰”属于史家评论，应与事件记述分开理解。'}
+];
+ATLAS.sources.push(...ATLAS.books.filter(b=>b.id!=='tongjianBook').map(b=>({id:b.id,title:`${b.author} · ${b.title}`,url:b.url,note:`${b.status}。${b.note}`})));
+ATLAS.readingStages=[
+ {lv:'下篇第三十三章 · 晋初的情势',jin:'第二章「晋初情势」、第三章「西晋乱亡」',qian:'第十三章 · 西晋兴亡',question:'把宗室内战、地方军事力量和中央控制放在一起，找出统一秩序为什么松动。'},
+ {lv:'下篇第三十四章 · 五胡之乱（上）',jin:'第三章「西晋乱亡」、第四章「东晋初年形势」',qian:'第十四章 · 东晋南渡；第十五章 · 五胡十六国',question:'南迁后的晋朝廷依靠谁？北方与巴蜀哪些力量同时存在？不要只沿着晋帝世系读。'},
+ {lv:'下篇第三十四、三十五章 · 五胡之乱',jin:'第五章「东晋中叶形势上」、第六章「东晋中叶形势下」',qian:'第十五章 · 五胡十六国',question:'用根据地分组记忆：关中、河北、河西、巴蜀与江南，分别是谁在竞争？'},
+ {lv:'下篇第三十五章 · 五胡之乱（下）',jin:'第六章第四节 · 肥水之战（原书题名）',qian:'第十四、十五章 · 对照南北主线',question:'区分军事胜负与统治瓦解：383年战败、384年分裂、394年前秦结束是三个节点。'},
+ {lv:'下篇第三十五章 · 五胡之乱（下）',jin:'第六章后半部分、第七章「东晋末叶形势」',qian:'第十五章 · 五胡十六国；第十八章 · 门第',question:'燕看慕容宗室的分化，秦看不同统治集团，凉看河西的并立竞争；刘裕北伐另追一条线。'},
+ {lv:'下篇第三十五、三十六章 · 从十六国到南北朝',jin:'第七章「东晋末叶形势」、第八章「宋初南北情势」',qian:'第十五至十七章 · 从并立到南北朝',question:'南方420年换朝，北方439年收束；先画两条时间线，再看它们何时交汇。'}
+];
+ATLAS.relationLessons=[
+ {id:'zhao',title:'二赵：分立后兼并',intro:'刘氏汉改号赵；石勒另建赵。两者在319—329年并立。',states:['han','zhao','ranwei'],steps:[['304','刘渊称汉王'],['319','刘曜改号赵；石勒另立赵'],['329','后赵灭前赵'],['349—352','后赵内乱，冉魏与前燕等兴起']],question:'先看刘氏与石氏，再记“前、后”；它们不是改朝后的新旧国名。',year:329,volume:94},
+ {id:'yan',title:'诸燕：宗室分化与区域接替',intro:'前燕亡后，慕容宗室分别建立后燕与西燕；后燕受北魏打击后又出现南燕。',states:['yan','houyan','xiyan','nanyan','beiyan'],steps:[['370','前燕亡于前秦'],['384','后燕、西燕分别兴起'],['394','后燕灭西燕'],['398—399','南燕先据滑台，后入山东'],['407 / 409','高云、冯跋先后掌辽西政权']],question:'宗室关联、同时并立和统治集团更替是三种关系；北燕不能简单接成慕容氏世系。',year:398,volume:110},
+ {id:'qin',title:'三秦：同国号，不同统治集团',intro:'前秦苻氏、后秦姚氏、西秦乞伏氏，三者不能接成同一个王朝。',states:['qin','houqin','xiqin'],steps:[['351','苻氏前秦兴起'],['384','姚氏后秦兴起'],['385','乞伏氏西秦兴起'],['400—409','西秦统治中断，后来复国']],question:'看到“秦”，先核对统治集团与位置：关中或陇西、河湟，不能只靠国号辨认。',year:386,volume:106},
+ {id:'liang',title:'五凉：河西与河湟的竞争',intro:'张氏前凉、吕氏后凉，以及南凉、北凉、西凉，存在交叉并立。',states:['liang','houliang','nanliang','beiliang','xiliang'],steps:[['376','前凉降前秦'],['386','吕光经营后凉'],['397—400','南凉、北凉、西凉先后出现'],['414','西秦灭南凉'],['421 / 439','北凉灭西凉；北魏灭北凉']],question:'不要画五次顺序接班：分别追踪姑臧、张掖、酒泉、敦煌和乐都。',year:414,volume:116}
+];
+// 新增四个衔接节点，仍沿用区域级示意，避免无依据的精细边界。
+function addReadingFrame(baseYear,entry,mutate){
+ const base=ATLAS.frames.find(f=>f.year===baseYear);
+ const f={...base,...entry,map:JSON.parse(JSON.stringify(base.map)),labels:JSON.parse(JSON.stringify(base.labels)),source:['tongjian']};
+ delete f.battle;mutate(f);ATLAS.frames.push(f);
+}
+addReadingFrame(370,{year:373,title:'前秦取得巴蜀与汉中',stage:2,type:'版图扩张',volume:103,summary:'前秦攻取梁、益二州的主要地区。巴蜀从347年归晋，转为前秦经营的区域。',before:'前秦已于370年灭前燕；巴蜀和汉中主要由东晋控制，河西前凉与代仍存在。',change:'杨安、朱肜等进攻汉中与巴蜀，晋军退却，前秦取得成都、汉中等地。',after:'前秦向西南扩张；376年再兼并前凉与代，383年南征前已经是广域政权。',remember:'前秦扩张分三步记：370年河北、373年巴蜀、376年河西与代地。',people:['苻坚','杨安','朱肜','周仲孙']},f=>{f.map.qin.push('sichuan','hanzhong');f.map.eastjin=f.map.eastjin.filter(r=>!['sichuan','hanzhong'].includes(r));});
+addReadingFrame(410,{year:414,title:'西秦灭南凉',stage:4,type:'区域兼并',volume:116,summary:'乞伏炽磐攻取乐都，南凉结束。河湟的变化来自西秦扩张，与北凉经营河西要分开看。',before:'南凉已失去姑臧，以乐都为中心；西秦于409年复国，继续在陇西、河湟扩张。',change:'秃发傉檀率军外出，乞伏炽磐乘机进攻乐都；乐都陷落，傉檀随后归降。',after:'西秦取得南凉的主要根据地。河西仍有北凉、西凉并立，五凉还没有完全收束。',remember:'南凉亡于西秦，西凉亡于北凉：相同“凉”字不表示同一种接替关系。',people:['乞伏炽磐','秃发傉檀','秃发虎台']},f=>{delete f.map.nanliang;delete f.labels.nanliang;f.map.xiqin=['hehuangWest','longxi'];f.map.beiliang=['hexiMiddle','hexiWuwei'];});
+addReadingFrame(417,{year:418,title:'晋军失去关中，夏据长安',stage:5,type:'北伐回落',volume:118,summary:'刘裕南返后，晋军内部冲突与夏的进攻叠加，长安易主。417年的北伐成果不能直接延续到420年。',before:'晋军刚刚灭后秦，刘裕留下刘义真等经营关中，自己返回南方。',change:'王镇恶、沈田子、王修先后死于内部争斗；刘义真东归时晋军败退，赫连勃勃进入长安。',after:'夏控制关中主要地区；南方朝廷仍是东晋，要到420年才发生晋宋易代。',remember:'417年进长安，418年失关中，420年晋宋易代：三件事分开记。',people:['刘裕','刘义真','王镇恶','赫连勃勃']},f=>{f.map.xia.push('guanzhong');f.map.eastjin=f.map.eastjin.filter(r=>r!=='guanzhong');f.labels.xia=[108.5,37.4];});
+addReadingFrame(421,{year:427,title:'北魏攻取统万城，夏仍未结束',stage:5,type:'北魏扩张',volume:120,summary:'北魏夺取夏的都城统万，赫连昌退往上邽。失去都城与残余政权结束之间相隔数年。',before:'北魏已经向关中进军；夏在统万与关中两线应对，南方此时为刘宋。',change:'拓跋焘攻取统万城，赫连昌西走；北魏继续追击，逐步取得夏的主要统治区域。',after:'夏的残余力量继续活动，431年才结束。北魏此后再灭北燕、北凉。',remember:'夏：427年失都，431年结束；北燕436年、北凉439年，再分两步收束。',people:['拓跋焘','赫连昌','赫连定','奚斤']},f=>{delete f.map.xia;delete f.labels.xia;f.map.wei=['dai','hebei','hedong','guanzhong','shandong','zhongyuan'];f.map.song=south.concat('hanzhong');});
+ATLAS.frames.sort((a,b)=>a.year-b.year);
+ATLAS.frames.find(f=>f.year===431).volume=122;
+// 南燕399年才转入广固，不用后来的山东根据地替代398年的滑台。
+const map398=ATLAS.frames.find(f=>f.year===398);
+map398.map.nanyan=['eastCentral'];map398.labels.nanyan=[114.8,34.7];
+map398.change='慕容德在滑台称燕王；北魏迁都平城。地图把南燕放在滑台周边，399年它才转入山东、以广固为根据地。';
+map398.remember='398年先记滑台；399年再入山东。后燕仍在辽西，北魏居中扩张。';
+// 410年南凉弃姑臧，焦朗据城；北凉在411年攻取，412年迁都。
+const map410=ATLAS.frames.find(f=>f.year===410);
+map410.map.beiliang=['hexiMiddle'];
+map410.after='刘裕继续积累权力，几年后北伐后秦。姑臧在南凉撤离后由焦朗据守，411年才被北凉攻取，不能把两个年份的格局合并。';
+ATLAS.mapNotes={
+ 373:['巴蜀与汉中','先找成都、汉中方向：前秦新取得的西南区域，与河西前凉、北方代地仍并立。'],
+ 383:['战前形势','本图保留南征前的主要格局。淝水战败并不等于北方各地在383年立即易主。'],
+ 384:['新政权的根据地','起兵、占城与稳定控制不是同一天发生；本图仅概括各支力量的位置。'],
+ 398:['滑台与广固','南燕此时在滑台周边；399年才转入山东。辽西仍是后燕，北魏控制南北之间的要地。'],
+ 410:['姑臧的过渡状态','南凉退出姑臧后，焦朗据城，411年北凉才攻取。此处暂留灰色，不把410年画成411年。'],
+ 414:['河湟与河西','南凉的乐都根据地转入西秦；北凉、西凉仍在河西并立。'],
+ 418:['关中的易主','长安由晋军转入夏的控制；南方仍是东晋，420年才换成刘宋。'],
+ 427:['都城失守后的残余','北魏取得统万与关中主要地区。夏仍在上邽等地活动，残余范围未在本图展开。'],
+ 431:['河湟并非空白','西秦、夏相继结束，吐谷浑参与这一变化；灰色表示本图未展开的地方势力。'],
+ 439:['阶段终点','北魏与刘宋南北并立；439年是常用分期终点，北凉残余后来仍在西域活动。']
+};
+ATLAS.stageMapNotes=[
+ ['从统一看瓦解','先找洛阳与长安，再对照江南；统一完成后，宗室内战逐渐削弱中央控制。'],
+ ['南北与巴蜀并看','江南晋室、北方汉赵、巴蜀成汉、河西张氏同时存在。先定位，再记兴亡。'],
+ ['关中、河北、河西','前秦在关中，前燕在河北，前凉在河西；东晋经营江南与巴蜀。'],
+ ['兼并不等于整合','把前秦的扩张次序与淝水战败分开看；新近归附的区域仍有旧势力。'],
+ ['按区域拆开并立','关中与陇西看秦，河北、辽西与山东看燕和北魏，河西、河湟看凉与西秦。'],
+ ['南方换朝，北方兼并','南方晋宋更替是一条线；北魏对夏、北燕、北凉的兼并是另一条线。']
+];
